@@ -33,7 +33,7 @@ LPD8806 strip = LPD8806(nLEDs, dataPin, clockPin);
 
 void setup() {
   Serial.begin(9600); //logging
-  attachInterrupt(myButton, stateChange, CHANGE);
+  attachInterrupt(myButton, stateChange, RISING);
   
   // Start up the LED strip
   strip.begin();
