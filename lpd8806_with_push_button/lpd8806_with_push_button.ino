@@ -1,7 +1,7 @@
 #include "LPD8806.h"
 #include "SPI.h"
 
-// Example to control LPD8806-based RGB LED Modules in a strip
+// Adapted from adafruit's awesome LPD8806 library, found here: https://github.com/adafruit/LPD8806 
 
 /*****************************************************************************/
 
@@ -163,8 +163,6 @@ void rainbowCycle(uint8_t wait) {
     }  
   }
 }
-
-
 
 /* Helper functions */
 
