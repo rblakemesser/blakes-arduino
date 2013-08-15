@@ -8,20 +8,15 @@
 // Sequences
 int numSequences = 5;
 int currentSequence = 0;
+int currentOK = HIGH;
 
 // Number of RGB LEDs in strand:
 int nLEDs = 14;
+int dataPin  = 3;
+int clockPin = 4;
+int myButton = 0; // press button in pin D2, which is for some reason called 0 in interrupt land
 
-// Chose 2 pins for output; can be any valid output pins:
-int dataPin  = 2;
-int clockPin = 3;
-
-
-// Parameters for Switch
-int switchReader;
-int myButton = 4; // press button in pin D4
-int buttonReading;
-int last;
+volatile int buttonReading = LOW;
 
 // First parameter is the number of LEDs in the strand.  The LED strips
 // are 32 LEDs per meter but you can extend or cut the strip.  Next two
@@ -37,68 +32,64 @@ LPD8806 strip = LPD8806(nLEDs, dataPin, clockPin);
 //LPD8806 strip = LPD8806(nLEDs);
 
 void setup() {
-  Serial.begin(9600);
-  // Button
-  pinMode(myButton, INPUT);
-  currentSequence = 0;
+  Serial.begin(9600); //logging
+  attachInterrupt(myButton, stateChange, CHANGE);
+  
   // Start up the LED strip
   strip.begin();
-
   // Update the strip, to start they are all 'off'
   strip.show();
+
 }
 
 
 void loop() {
-  buttonReading = digitalRead(myButton);
-  if (buttonReading != last) {
+  currentOK = HIGH;
+  playSequence(currentSequence);
+}
+
+void stateChange() {
+  buttonReading = !buttonReading;
+  Serial.println("state changed!");
     if (buttonReading == HIGH) {
-      
-      nextSequence(currentSequence); 
+      currentOK = LOW;
       currentSequence += 1;
       if (currentSequence >= numSequences) {
         currentSequence = 0;
-      }
-
     }
-    last = buttonReading;
   }
-  // Send a simple pixel chase in...
-//  colorChase(strip.Color(127, 127, 127), 50); // White
-//  colorChase(strip.Color(127,   0,   0), 50); // Red
-//  colorChase(strip.Color(127, 127,   0), 50); // Yellow
-//  colorChase(strip.Color(  0, 127,   0), 50); // Green
-//  colorChase(strip.Color(  0, 127, 127), 50); // Cyan
-
-
-  // Fill the entire strip with...
-//  colorWipe(strip.Color(127,   0,   0), 50);  // Red
-//  colorWipe(strip.Color(  0, 127,   0), 50);  // Green
-//  colorWipe(strip.Color(  0,   0, 127), 50);  // Blue
-
-  
 }
-int nextSequence(int current) {
+
+int playSequence(int current) {
   String logOne = "running sequence: ";
   String logStatement = logOne + current;
   Serial.println(logStatement);
   switch (current) {
      case 0:
-       rainbow(10);
-       break;
-     case 1:
+       colorChase(strip.Color(  0,   0, 127), 50); // Blue
+       colorChase(strip.Color(127,   0,   0), 50); // Red
+       colorChase(strip.Color(127, 127,   0), 50); // Yellow
+       colorChase(strip.Color(  0, 127,   0), 50); // Green
+       colorChase(strip.Color(  0, 127, 127), 50); // Cyan
        colorChase(strip.Color(  0,   0, 127), 50); // Blue
        colorChase(strip.Color(127,   0, 127), 50); // Violet
        break;
-     case 2:
-       rainbowCycle(0);
-       break;
-     case 3:
+       
+     case 1: 
        colorWipe(strip.Color(127,   0,   0), 50);  // Red
        colorWipe(strip.Color(  0, 127,   0), 50);  // Green
        break;
+       
+     case 2:
+       rainbowCycle(0);
+       break;
+       
+     case 3:
+       rainbow(10);
+       break;
+       
      case 4:
-       colorWipe(strip.Color(  0,   0,   127), 50);  // Blue
+       colorWipe(strip.Color(  127,   127,   127), 50);  // Blue
        break;
   }
 }
@@ -109,11 +100,48 @@ void rainbow(uint8_t wait) {
   for (j=0; j < 384; j++) {     // 3 cycles of all 384 colors in the wheel
     for (i=0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel( (i + j) % 384));
-    }  
+    }
     strip.show();   // write all the pixels out
     delay(wait);
+    if (currentOK == LOW) {
+      return;
+    }  
   }
 }
+
+// Fill the dots progressively along the strip.
+void colorWipe(uint32_t c, uint8_t wait) {
+  int i;
+  for (i=0; i < strip.numPixels(); i++) {
+    strip.setPixelColor(i, c);
+    strip.show();
+    delay(wait);
+    if (currentOK == LOW) {
+      return;
+    }
+  }
+}
+// Chase one dot down the full strip.
+void colorChase(uint32_t c, uint8_t wait) {
+  int i;
+
+  // Start by turning all pixels off:
+  for(i=0; i<strip.numPixels(); i++) strip.setPixelColor(i, 0);
+
+  // Then display one pixel at a time:
+  for(i=0; i<strip.numPixels(); i++) {
+    strip.setPixelColor(i, c); // Set new pixel 'on'
+    strip.show();              // Refresh LED states
+    strip.setPixelColor(i, 0); // Erase pixel, but don't refresh!
+    delay(wait);
+    if (currentOK == LOW) {
+      return;
+    }  
+  }
+
+  strip.show(); // Refresh to turn off last pixel
+}
+
 
 // Slightly different, this one makes the rainbow wheel equally distributed 
 // along the chain
@@ -130,37 +158,12 @@ void rainbowCycle(uint8_t wait) {
     }  
     strip.show();   // write all the pixels out
     delay(wait);
+    if (currentOK == LOW) {
+      return;
+    }  
   }
 }
 
-// Fill the dots progressively along the strip.
-void colorWipe(uint32_t c, uint8_t wait) {
-  int i;
-
-  for (i=0; i < strip.numPixels(); i++) {
-      strip.setPixelColor(i, c);
-      strip.show();
-      delay(wait);
-  }
-}
-
-// Chase one dot down the full strip.
-void colorChase(uint32_t c, uint8_t wait) {
-  int i;
-
-  // Start by turning all pixels off:
-  for(i=0; i<strip.numPixels(); i++) strip.setPixelColor(i, 0);
-
-  // Then display one pixel at a time:
-  for(i=0; i<strip.numPixels(); i++) {
-    strip.setPixelColor(i, c); // Set new pixel 'on'
-    strip.show();              // Refresh LED states
-    strip.setPixelColor(i, 0); // Erase pixel, but don't refresh!
-    delay(wait);
-  }
-
-  strip.show(); // Refresh to turn off last pixel
-}
 
 
 /* Helper functions */
