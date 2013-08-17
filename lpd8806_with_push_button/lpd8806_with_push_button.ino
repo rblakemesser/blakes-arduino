@@ -6,7 +6,7 @@
 /*****************************************************************************/
 
 // Sequences
-int numSequences = 5;
+int numSequences = 7;
 int currentSequence = 0;
 int currentOK = HIGH;
 
@@ -89,7 +89,15 @@ int playSequence(int current) {
        break;
        
      case 4:
-       colorWipe(strip.Color(  127,   127,   127), 50);  // Blue
+       redRainbow(10);
+       break;
+       
+     case 5:
+       blueRainbow(10);
+       break;
+       
+     case 6:
+       greenRainbow(10);
        break;
   }
 }
@@ -98,6 +106,51 @@ void rainbow(uint8_t wait) {
   int i, j;
    
   for (j=0; j < 384; j++) {     // 3 cycles of all 384 colors in the wheel
+    for (i=0; i < strip.numPixels(); i++) {
+      strip.setPixelColor(i, Wheel( (i + j) % 384));
+    }
+    strip.show();   // write all the pixels out
+    delay(wait);
+    if (currentOK == LOW) {
+      return;
+    }  
+  }
+}
+
+void redRainbow(uint8_t wait) {
+  int i, j;
+   
+  for (j=0; j < 128; j++) {     // 3 cycles of all 384 colors in the wheel
+    for (i=0; i < strip.numPixels(); i++) {
+      strip.setPixelColor(i, Wheel( (i + j) % 384));
+    }
+    strip.show();   // write all the pixels out
+    delay(wait);
+    if (currentOK == LOW) {
+      return;
+    }  
+  }
+}
+
+void blueRainbow(uint8_t wait) {
+  int i, j;
+   
+  for (j=256; j < 384; j++) {     // 3 cycles of all 384 colors in the wheel
+    for (i=0; i < strip.numPixels(); i++) {
+      strip.setPixelColor(i, Wheel( (i + j) % 384));
+    }
+    strip.show();   // write all the pixels out
+    delay(wait);
+    if (currentOK == LOW) {
+      return;
+    }  
+  }
+}
+
+void greenRainbow(uint8_t wait) {
+  int i, j;
+   
+  for (j=128; j < 256; j++) {     // 3 cycles of all 384 colors in the wheel
     for (i=0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel( (i + j) % 384));
     }
@@ -179,14 +232,14 @@ uint32_t Wheel(uint16_t WheelPos) {
       b = 0;                  //blue off
       break; 
     case 1:
+      r = 0;                  //red off
       g = 127 - WheelPos % 128;  //green down
       b = WheelPos % 128;      //blue up
-      r = 0;                  //red off
       break; 
     case 2:
-      b = 127 - WheelPos % 128;  //blue down 
       r = WheelPos % 128;      //red up
       g = 0;                  //green off
+      b = 127 - WheelPos % 128;  //blue down 
       break; 
   }
   return(strip.Color(r,g,b));
