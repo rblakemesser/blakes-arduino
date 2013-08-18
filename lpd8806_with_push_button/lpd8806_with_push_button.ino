@@ -6,12 +6,12 @@
 /*****************************************************************************/
 
 // Sequences
-int numSequences = 7;
+int numSequences = 10;
 int currentSequence = 0;
 int currentOK = HIGH;
 
 // Number of RGB LEDs in strand:
-int nLEDs = 14;
+int nLEDs = 34;
 int dataPin  = 3;
 int clockPin = 4;
 int myButton = 0; // press button in pin D2, which is for some reason called 0 in interrupt land
@@ -67,16 +67,16 @@ int playSequence(int current) {
      case 0:
        colorChase(strip.Color(  0,   0, 127), 50); // Blue
        colorChase(strip.Color(127,   0,   0), 50); // Red
-       colorChase(strip.Color(127, 127,   0), 50); // Yellow
-       colorChase(strip.Color(  0, 127,   0), 50); // Green
-       colorChase(strip.Color(  0, 127, 127), 50); // Cyan
-       colorChase(strip.Color(  0,   0, 127), 50); // Blue
-       colorChase(strip.Color(127,   0, 127), 50); // Violet
+//       colorChase(strip.Color(127, 127,   0), 50); // Yellow
+//       colorChase(strip.Color(  0, 127,   0), 50); // Green
+//       colorChase(strip.Color(  0, 127, 127), 50); // Cyan
+//       colorChase(strip.Color(  0,   0, 127), 50); // Blue
+//       colorChase(strip.Color(127,   0, 127), 50); // Violet
        break;
        
      case 1: 
        colorWipe(strip.Color(127,   0,   0), 50);  // Red
-       colorWipe(strip.Color(  0, 127,   0), 50);  // Green
+       colorWipe(strip.Color(127, 0,   127), 50);  // Violet
        break;
        
      case 2:
@@ -97,6 +97,24 @@ int playSequence(int current) {
        
      case 6:
        cyanRainbow(10);
+       break;  
+       
+     case 7:
+       for (int j=0; j < 5; j++){ 
+         yellowRainbowCycle(10);
+       }
+       break;
+       
+     case 8:
+       for (int j=0; j < 5; j++){ 
+         violetRainbowCycle(10);
+       }
+       break;
+       
+     case 9:
+       for (int j=0; j < 5; j++){ 
+         cyanRainbowCycle(10);
+       }
        break;
   }
 }
@@ -190,7 +208,6 @@ void colorChase(uint32_t c, uint8_t wait) {
       return;
     }  
   }
-
   strip.show(); // Refresh to turn off last pixel
 }
 
@@ -201,6 +218,63 @@ void rainbowCycle(uint8_t wait) {
   uint16_t i, j;
   
   for (j=0; j < 384 * 5; j++) {     // 5 cycles of all 384 colors in the wheel
+    for (i=0; i < strip.numPixels(); i++) {
+      // tricky math! we use each pixel as a fraction of the full 384-color wheel
+      // (thats the i / strip.numPixels() part)
+      // Then add in j which makes the colors go around per pixel
+      // the % 384 is to make the wheel cycle around
+      strip.setPixelColor(i, Wheel( ((i * 384 / strip.numPixels()) + j) % 384) );
+    }  
+    strip.show();   // write all the pixels out
+    delay(wait);
+    if (currentOK == LOW) {
+      return;
+    }  
+  }
+}
+
+void cyanRainbowCycle(uint8_t wait) {
+  uint16_t i, j;
+  
+  for (j=128; j < 256; j++) {     // 5 cycles of all 384 colors in the wheel
+    for (i=0; i < strip.numPixels(); i++) {
+      // tricky math! we use each pixel as a fraction of the full 384-color wheel
+      // (thats the i / strip.numPixels() part)
+      // Then add in j which makes the colors go around per pixel
+      // the % 384 is to make the wheel cycle around
+      strip.setPixelColor(i, Wheel( ((i * 384 / strip.numPixels()) + j) % 384) );
+    }  
+    strip.show();   // write all the pixels out
+    delay(wait);
+    if (currentOK == LOW) {
+      return;
+    }  
+  }
+}
+
+void violetRainbowCycle(uint8_t wait) {
+  uint16_t i, j;
+  
+  for (j=256; j < 384; j++) {     // 5 cycles of all 384 colors in the wheel
+    for (i=0; i < strip.numPixels(); i++) {
+      // tricky math! we use each pixel as a fraction of the full 384-color wheel
+      // (thats the i / strip.numPixels() part)
+      // Then add in j which makes the colors go around per pixel
+      // the % 384 is to make the wheel cycle around
+      strip.setPixelColor(i, Wheel( ((i * 384 / strip.numPixels()) + j) % 384) );
+    }  
+    strip.show();   // write all the pixels out
+    delay(wait);
+    if (currentOK == LOW) {
+      return;
+    }  
+  }
+}
+
+void yellowRainbowCycle(uint8_t wait) {
+  uint16_t i, j;
+  
+  for (j=0; j < 128 ; j++) {     // 5 cycles of all 384 colors in the wheel
     for (i=0; i < strip.numPixels(); i++) {
       // tricky math! we use each pixel as a fraction of the full 384-color wheel
       // (thats the i / strip.numPixels() part)
