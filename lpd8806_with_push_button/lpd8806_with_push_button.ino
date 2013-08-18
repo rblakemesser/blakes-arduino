@@ -42,7 +42,6 @@ void setup() {
 
 }
 
-
 void loop() {
   currentOK = HIGH;
   playSequence(currentSequence);
@@ -89,15 +88,15 @@ int playSequence(int current) {
        break;
        
      case 4:
-       redRainbow(10);
+       yellowRainbow(10);
        break;
        
      case 5:
-       blueRainbow(10);
+       violetRainbow(10);
        break;
        
      case 6:
-       greenRainbow(10);
+       cyanRainbow(10);
        break;
   }
 }
@@ -117,7 +116,7 @@ void rainbow(uint8_t wait) {
   }
 }
 
-void redRainbow(uint8_t wait) {
+void yellowRainbow(uint8_t wait) {
   int i, j;
    
   for (j=0; j < 128; j++) {     // 3 cycles of all 384 colors in the wheel
@@ -132,7 +131,7 @@ void redRainbow(uint8_t wait) {
   }
 }
 
-void blueRainbow(uint8_t wait) {
+void violetRainbow(uint8_t wait) {
   int i, j;
    
   for (j=256; j < 384; j++) {     // 3 cycles of all 384 colors in the wheel
@@ -147,7 +146,7 @@ void blueRainbow(uint8_t wait) {
   }
 }
 
-void greenRainbow(uint8_t wait) {
+void cyanRainbow(uint8_t wait) {
   int i, j;
    
   for (j=128; j < 256; j++) {     // 3 cycles of all 384 colors in the wheel
