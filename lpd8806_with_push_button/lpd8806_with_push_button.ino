@@ -60,28 +60,51 @@ int playSequence(int current) {
   Serial.println(logStatement);
   switch (current) {
      case 0:
-       cycleColorChase();
+       cycleColorChase(30);
        break;
        
-     case 1: 
-       cycleColorWipe();
-       colorWipe(strip.Color(127,   0,   0), 35); // Red
+     case 1:
+       cycleColorChase(2);
        break;
        
-     case 2:
-       rainbowCycle(0);
+     case 2: 
+       cycleColorWipe(30);
        break;
        
-     case 3:
-       rainbow(0,354,10);
-       break;
+     case 3: 
+       cycleColorWipe(2);
+       break;    
        
-     case 4: 
-       colorStripe(strip.Color(127, 0,   127), strip.Color(127, 0,   0), 30);
-       colorWipe(strip.Color(127,   0,   0), 35); // Red
+     case 4:
+       rainbowCycle(30);
        break;
        
      case 5:
+       rainbowCycle(2);
+       break;
+       
+     case 6:
+       rainbow(0,354,100);
+       break;
+       
+     case 7:
+       rainbow(0,354,30);
+       break;
+      
+     case 8:
+       rainbow(0,354,10);
+       break;
+
+     case 9: 
+       colorStripe(strip.Color(127, 0,   127), strip.Color(0, 127,   0), 30);
+       colorStripe(strip.Color(0, 127,   0), strip.Color(127, 0,   127), 30);
+       colorStripe(strip.Color(127, 127,   0), strip.Color(0, 0,   127), 30);
+       colorStripe(strip.Color(0, 0,   127), strip.Color(127, 127,   0), 30);
+       colorStripe(strip.Color(0, 127,   127), strip.Color(127, 0,   0), 30);
+       colorStripe(strip.Color(127, 0,   0), strip.Color(0, 127,   127), 30);
+       break;
+       
+     case 10:
        acceleratingColorChase();
        cycleColorStrobe();
        rainbowCycle(0);
@@ -110,14 +133,14 @@ void acceleratingColorChase() {
    colorChase(strip.Color(127,   0, 127), 0); // Violet
 }
 
-void cycleColorChase() {
-   colorChase(strip.Color(  0,   0, 127), 35); // Blue
-   colorChase(strip.Color(127,   0,   0), 35); // Red
-   colorChase(strip.Color(127, 127,   0), 35); // Yellow
-   colorChase(strip.Color(  0, 127,   0), 35); // Green
-   colorChase(strip.Color(  0, 127, 127), 35); // Cyan
-   colorChase(strip.Color(  0,   0, 127), 35); // Blue
-   colorChase(strip.Color(127,   0, 127), 35); // Violet
+void cycleColorChase(uint8_t wait) {
+   colorChase(strip.Color(  0,   0, 127), wait); // Blue
+   colorChase(strip.Color(127,   0,   0), wait); // Red
+   colorChase(strip.Color(127, 127,   0), wait); // Yellow
+   colorChase(strip.Color(  0, 127,   0), wait); // Green
+   colorChase(strip.Color(  0, 127, 127), wait); // Cyan
+   colorChase(strip.Color(  0,   0, 127), wait); // Blue
+   colorChase(strip.Color(127,   0, 127), wait); // Violet
 }
 
 void cycleColorStrobe(){
@@ -130,14 +153,14 @@ void cycleColorStrobe(){
    colorStrobe(strip.Color(127,   0, 127), 70); // Violet
 }
 
-void cycleColorWipe(){
-   colorWipe(strip.Color(  0,   0, 127), 40); // Blue
-   colorWipe(strip.Color(127,   0,   0), 40); // Red
-   colorWipe(strip.Color(127, 127,   0), 40); // Yellow
-   colorWipe(strip.Color(  0, 127,   0), 40); // Green
-   colorWipe(strip.Color(  0, 127, 127), 40); // Cyan
-   colorWipe(strip.Color(  0,   0, 127), 45); // Blue
-   colorWipe(strip.Color(127,   0, 127), 40); // Violet
+void cycleColorWipe(uint8_t wait){
+   colorWipe(strip.Color(  0,   0, 127), wait); // Blue
+   colorWipe(strip.Color(127,   0,   0), wait); // Red
+   colorWipe(strip.Color(127, 127,   0), wait); // Yellow
+   colorWipe(strip.Color(  0, 127,   0), wait); // Green
+   colorWipe(strip.Color(  0, 127, 127), wait); // Cyan
+   colorWipe(strip.Color(  0,   0, 127), wait); // Blue
+   colorWipe(strip.Color(127,   0, 127), wait); // Violet
 }
 
 void rainbow(int start, int finish, uint8_t wait) {
