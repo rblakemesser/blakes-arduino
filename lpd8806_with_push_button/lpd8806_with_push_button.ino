@@ -60,13 +60,12 @@ int playSequence(int current) {
   Serial.println(logStatement);
   switch (current) {
      case 0:
-       acceleratingColorChase();
-       acceleratingColorStrobe();
-       rainbowCycle(0);
+       cycleColorChase();
        break;
        
      case 1: 
-       acceleratingColorWipe();
+       cycleColorWipe();
+       colorWipe(strip.Color(127,   0,   0), 35); // Red
        break;
        
      case 2:
@@ -75,6 +74,17 @@ int playSequence(int current) {
        
      case 3:
        rainbow(0,354,10);
+       break;
+       
+     case 4: 
+       colorStripe(strip.Color(127, 0,   127), strip.Color(127, 0,   0), 30);
+       colorWipe(strip.Color(127,   0,   0), 35); // Red
+       break;
+       
+     case 5:
+       acceleratingColorChase();
+       cycleColorStrobe();
+       rainbowCycle(0);
        break;
        
      default:
@@ -100,31 +110,34 @@ void acceleratingColorChase() {
    colorChase(strip.Color(127,   0, 127), 0); // Violet
 }
 
-void acceleratingColorStrobe(){
-   colorStrobe(strip.Color(  0,   0, 127), 40); // Blue
-   colorStrobe(strip.Color(127,   0,   0), 35); // Red
-   colorStrobe(strip.Color(127, 127,   0), 30); // Yellow
-   colorStrobe(strip.Color(  0, 127,   0), 25); // Green
-   colorStrobe(strip.Color(  0, 127, 127), 20); // Cyan
-   colorStrobe(strip.Color(  0,   0, 127), 15); // Blue
-   colorStrobe(strip.Color(127,   0, 127), 10); // Violet
-   colorStrobe(strip.Color(  0,   0, 127), 8); // Blue
-   colorStrobe(strip.Color(127,   0,   0), 6); // Red
-   colorStrobe(strip.Color(127, 127,   0), 4); // Yellow
-   colorStrobe(strip.Color(  0, 127,   0), 2); // Green
-   colorStrobe(strip.Color(  0, 127, 127), 1); // Cyan
-   colorStrobe(strip.Color(  0,   0, 127), 0); // Blue
-   colorStrobe(strip.Color(127,   0, 127), 0); // Violet
+void cycleColorChase() {
+   colorChase(strip.Color(  0,   0, 127), 35); // Blue
+   colorChase(strip.Color(127,   0,   0), 35); // Red
+   colorChase(strip.Color(127, 127,   0), 35); // Yellow
+   colorChase(strip.Color(  0, 127,   0), 35); // Green
+   colorChase(strip.Color(  0, 127, 127), 35); // Cyan
+   colorChase(strip.Color(  0,   0, 127), 35); // Blue
+   colorChase(strip.Color(127,   0, 127), 35); // Violet
 }
 
-void acceleratingColorWipe(){
+void cycleColorStrobe(){
+   colorStrobe(strip.Color(  0,   0, 127), 70); // Blue
+   colorStrobe(strip.Color(127,   0,   0), 70); // Red
+   colorStrobe(strip.Color(127, 127,   0), 70); // Yellow
+   colorStrobe(strip.Color(  0, 127,   0), 70); // Green
+   colorStrobe(strip.Color(  0, 127, 127), 70); // Cyan
+   colorStrobe(strip.Color(  0,   0, 127), 70); // Blue
+   colorStrobe(strip.Color(127,   0, 127), 70); // Violet
+}
+
+void cycleColorWipe(){
    colorWipe(strip.Color(  0,   0, 127), 40); // Blue
-   colorWipe(strip.Color(127,   0,   0), 35); // Red
-   colorWipe(strip.Color(127, 127,   0), 30); // Yellow
-   colorWipe(strip.Color(  0, 127,   0), 25); // Green
-   colorWipe(strip.Color(  0, 127, 127), 20); // Cyan
-   colorWipe(strip.Color(  0,   0, 127), 15); // Blue
-   colorWipe(strip.Color(127,   0, 127), 10); // Violet
+   colorWipe(strip.Color(127,   0,   0), 40); // Red
+   colorWipe(strip.Color(127, 127,   0), 40); // Yellow
+   colorWipe(strip.Color(  0, 127,   0), 40); // Green
+   colorWipe(strip.Color(  0, 127, 127), 40); // Cyan
+   colorWipe(strip.Color(  0,   0, 127), 45); // Blue
+   colorWipe(strip.Color(127,   0, 127), 40); // Violet
 }
 
 void rainbow(int start, int finish, uint8_t wait) {
@@ -155,6 +168,22 @@ void colorWipe(uint32_t c, uint8_t wait) {
   int i;
   for (i=0; i < strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
+    strip.show();
+    if (changeSequence == HIGH) { return; }
+    delay(wait);
+  }
+}
+
+// Fill 2 colors of dots, alternating along the strip.
+void colorStripe(uint32_t c1, uint32_t c2, uint8_t wait) {
+  int i;
+  for (i=0; i < strip.numPixels(); i++) {
+    if (i % 2 == 0){
+      strip.setPixelColor(i, c1);
+    }
+    else {
+      strip.setPixelColor(i, c2);
+    } 
     strip.show();
     if (changeSequence == HIGH) { return; }
     delay(wait);
