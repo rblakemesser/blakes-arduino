@@ -64,49 +64,80 @@ int playSequence(int current) {
        break;
        
      case 1:
-       cycleColorChase(2);
+       cycleColorChase(20);
        break;
-       
-     case 2: 
-       cycleColorWipe(30);
+
+     case 2:
+       cycleColorChase(10);
        break;
        
      case 3: 
-       cycleColorWipe(2);
+       cycleColorWipe(30);
+       break;
+      
+     case 4: 
+       cycleColorWipe(20);
        break;    
        
-     case 4:
-       rainbowCycle(30);
-       break;
-       
-     case 5:
-       rainbowCycle(2);
-       break;
+     case 5: 
+       cycleColorWipe(10);
+       break;    
        
      case 6:
-       rainbow(0,354,100);
+       rainbowCycle(20);
        break;
        
      case 7:
-       rainbow(0,354,30);
+       rainbowCycle(10);
        break;
-      
+       
      case 8:
-       rainbow(0,354,10);
+       rainbowCycle(0);
        break;
-
-     case 9: 
-       colorStripe(strip.Color(127, 0,   127), strip.Color(0, 127,   0), 30);
-       colorStripe(strip.Color(0, 127,   0), strip.Color(127, 0,   127), 30);
-       colorStripe(strip.Color(127, 127,   0), strip.Color(0, 0,   127), 30);
-       colorStripe(strip.Color(0, 0,   127), strip.Color(127, 127,   0), 30);
-       colorStripe(strip.Color(0, 127,   127), strip.Color(127, 0,   0), 30);
-       colorStripe(strip.Color(127, 0,   0), strip.Color(0, 127,   127), 30);
+       
+     case 9:
+       rainbow(0,354,20);
        break;
        
      case 10:
+       rainbow(0,354,10);
+       break;
+      
+     case 11:
+       rainbow(0,354,0);
+       break;
+
+     case 12: 
+       cycleColorStripe(20);
+       break;
+
+     case 13: 
+       cycleColorStripe(10);
+       break;
+       
+     case 14: 
+       cycleColorStripe(0);
+       break;
+       
+     case 15: 
+       cycleColorStrobe(70);
+       break;
+       
+     case 16: 
+       cycleColorStrobe(30);
+       break;    
+       
+     case 17: 
+       cycleColorStrobe(20);
+       break;
+       
+     case 18: 
+       cycleColorStrobe(10);
+       break;
+       
+     case 19:
        acceleratingColorChase();
-       cycleColorStrobe();
+       cycleColorStrobe(70);
        rainbowCycle(0);
        break;
        
@@ -143,14 +174,23 @@ void cycleColorChase(uint8_t wait) {
    colorChase(strip.Color(127,   0, 127), wait); // Violet
 }
 
-void cycleColorStrobe(){
-   colorStrobe(strip.Color(  0,   0, 127), 70); // Blue
-   colorStrobe(strip.Color(127,   0,   0), 70); // Red
-   colorStrobe(strip.Color(127, 127,   0), 70); // Yellow
-   colorStrobe(strip.Color(  0, 127,   0), 70); // Green
-   colorStrobe(strip.Color(  0, 127, 127), 70); // Cyan
-   colorStrobe(strip.Color(  0,   0, 127), 70); // Blue
-   colorStrobe(strip.Color(127,   0, 127), 70); // Violet
+void cycleColorStripe(uint8_t wait) {
+   colorStripe(strip.Color(127, 0,   127), strip.Color(0, 127,   0), wait);
+   colorStripe(strip.Color(0, 127,   0), strip.Color(127, 0,   127), wait);
+   colorStripe(strip.Color(127, 127,   0), strip.Color(0, 0,   127), wait);
+   colorStripe(strip.Color(0, 0,   127), strip.Color(127, 127,   0), wait);
+   colorStripe(strip.Color(0, 127,   127), strip.Color(127, 0,   0), wait);
+   colorStripe(strip.Color(127, 0,   0), strip.Color(0, 127,   127), wait);
+}
+
+void cycleColorStrobe(uint8_t wait){
+   colorStrobe(strip.Color(  0,   0, 127), wait); // Blue
+   colorStrobe(strip.Color(127,   0,   0), wait); // Red
+   colorStrobe(strip.Color(127, 127,   0), wait); // Yellow
+   colorStrobe(strip.Color(  0, 127,   0), wait); // Green
+   colorStrobe(strip.Color(  0, 127, 127), wait); // Cyan
+   colorStrobe(strip.Color(  0,   0, 127), wait); // Blue
+   colorStrobe(strip.Color(127,   0, 127), wait); // Violet
 }
 
 void cycleColorWipe(uint8_t wait){
